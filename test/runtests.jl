@@ -2,5 +2,7 @@ using NNInterfaces
 using Test
 
 @testset "NNInterfaces.jl" begin
-    # Write your tests here.
+
+    model = EANN_H₂Ag()
+
 end
