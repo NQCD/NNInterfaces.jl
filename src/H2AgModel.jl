@@ -1,18 +1,20 @@
 
-export EANN_H₂Ag
 using PeriodicTable
+using H2AgModel_jll
+
+export H2AgModel
 
 """
 J. Phys. Chem. Lett. 2019, 10, 4962−4967
 J. Phys. Chem. C 2020, 124, 186−195
 """
-struct EANN_H₂Ag{T} <: AdiabaticFrictionModel
+struct H2AgModel{T} <: AdiabaticFrictionModel
     h2indices::Vector{Int}
     tmp_coordinates::Matrix{T}
     tmp_friction_coordinates::Matrix{T}
     tmp_friction::Matrix{T}
     tmp_energy::Matrix{T}
-    function EANN_H₂Ag(h2indices=[1, 2])
+    function H2AgModel(h2indices=[1, 2])
 
         ccall((:pes_init_, h2ag111_pes), Cvoid, ())
 

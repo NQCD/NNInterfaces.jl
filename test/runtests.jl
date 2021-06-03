@@ -3,6 +3,6 @@ using Test
 
 @testset "NNInterfaces.jl" begin
 
-    model = EANN_H₂Ag()
+    model = H2AgModel()
 
 end
