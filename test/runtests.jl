@@ -1,5 +1,11 @@
 using NNInterfaces
 using Test
+using FiniteDiff
+
+function finite_difference_gradient(model, R)
+    f(x) = potential(model, x)[1]
+    FiniteDiff.finite_difference_gradient(f, R)
+end
 
 @testset "NNInterfaces.jl" begin
 
@@ -29,9 +35,10 @@ using Test
             0.0175242    0.0534511   -0.013972    -0.0230929   0.0194911    0.0461783
         ]
 
-        @test potential(model, R) ≈ Vtest
-        @test derivative(model, R) ≈ Dtest
-        @test friction(model, R) ≈ Ftest
+        @test potential(model, R) ≈ Vtest rtol=1e-3
+        @test derivative(model, R) ≈ Dtest rtol=1e-3
+        @test finite_difference_gradient(model, R) ≈ Dtest rtol=1e-3
+        @test friction(model, R) ≈ Ftest rtol=1e-3
     end
 
 end
