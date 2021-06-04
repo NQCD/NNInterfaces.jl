@@ -30,6 +30,7 @@ function NonadiabaticModels.potential!(model::H2AgModel, V::AbstractVector, R::A
     ccall(((:pot0_, h2ag111_pes)), Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
             2, model.tmp_coordinates, model.tmp_energy)
     V[1] = austrip(model.tmp_energy[1]*u"eV")
+    return V
 end
 
 function NonadiabaticModels.derivative!(model::H2AgModel, D::AbstractMatrix, R::AbstractMatrix)
@@ -37,6 +38,7 @@ function NonadiabaticModels.derivative!(model::H2AgModel, D::AbstractMatrix, R::
     ccall((:dpeshon_, h2ag111_pes), Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
             2, model.tmp_coordinates, D)
     @. D = austrip(D*u"eV/Å")
+    return D
 end
 
 function NonadiabaticModels.friction!(model::H2AgModel, F::AbstractMatrix, R::AbstractMatrix)
@@ -47,6 +49,7 @@ function NonadiabaticModels.friction!(model::H2AgModel, F::AbstractMatrix, R::Ab
     end
     @. F[1:6,1:6] = austrip(model.tmp_friction*u"ps^-1")
     @. F *= austrip(elements[:H].atomic_mass)
+    return F
 end
 
 function set_coordinates!(model::H2AgModel, R)
