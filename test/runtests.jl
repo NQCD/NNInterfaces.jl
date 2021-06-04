@@ -29,9 +29,9 @@ using Test
             0.0175242    0.0534511   -0.013972    -0.0230929   0.0194911    0.0461783
         ]
 
-        @test Models.potential(model, R) == Vtest
-        @test Models.derivative(model, R) == Dtest
-        @test Models.friction(model, R) == Ftest
+        @test potential(model, R) == Vtest
+        @test derivative(model, R) == Dtest
+        @test friction(model, R) == Ftest
     end
 
 end
