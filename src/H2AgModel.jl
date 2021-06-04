@@ -16,7 +16,7 @@ struct H2AgModel{T} <: AdiabaticFrictionModel
     tmp_energy::Matrix{T}
     function H2AgModel(h2indices=[1, 2])
 
-        cd(h2ag111_pes_path) do
+        cd(splitdir(H2AgModel_jll.h2ag111_pes_path)[1]) do
             ccall((:pes_init_, h2ag111_pes), Cvoid, ())
         end
 
@@ -41,7 +41,7 @@ end
 
 function friction!(model::H2AgModel, F::AbstractMatrix, R::AbstractMatrix)
     @views model.tmp_friction_coordinates .= au_to_ang.(R[:,model.h2indices])
-    cd(h2ag111_friction_path) do
+    cd(splitdir(H2AgModel_jll.h2ag111_friction_path)[1]) do
         ccall((:tensor_, h2ag111_friction), Cvoid, (Ref{Float64}, Ptr{Float64}),
               model.tmp_coordinates, model.tmp_friction)
     end
