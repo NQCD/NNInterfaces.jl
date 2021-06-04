@@ -16,7 +16,7 @@ struct H2AgModel{T} <: AdiabaticFrictionModel
     tmp_energy::Matrix{T}
     function H2AgModel(h2indices=[1, 2])
 
-        cd("H2AgModel_jll.artifact_dir/lib") do
+        cd("$(H2AgModel_jll.artifact_dir)/lib") do
             ccall((:pes_init_, h2ag111_pes), Cvoid, ())
         end
 
