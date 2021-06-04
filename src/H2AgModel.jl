@@ -16,7 +16,7 @@ struct H2AgModel{T} <: AdiabaticFrictionModel
     tmp_energy::Matrix{T}
     function H2AgModel(h2indices=[1, 2])
 
-        cd("$(H2AgModel_jll.artifact_dir)/lib") do
+        cd(h2ag111_pes_path) do
             ccall((:pes_init_, h2ag111_pes), Cvoid, ())
         end
 
@@ -25,30 +25,26 @@ struct H2AgModel{T} <: AdiabaticFrictionModel
     end
 end
 
-# function potential!(model::EANN_H₂Ag, V::AbstractVector, R::AbstractMatrix)
-#     @views model.tmp_coordinates .= au_to_ang.(R[:,model.h2indices])
-#     cd(splitdir(model.potential_path)[1]) do
-#         ccall(model.potential_function, Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
-#               2, model.tmp_coordinates, model.tmp_energy)
-#     end
-#     V[1] = eV_to_au(model.tmp_energy[1])
-# end
+function potential!(model::EANN_H₂Ag, V::AbstractVector, R::AbstractMatrix)
+    @views model.tmp_coordinates .= au_to_ang.(R[:,model.h2indices])
+    ccall(((:pot0_, h2ag111_pes)), Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
+            2, model.tmp_coordinates, model.tmp_energy)
+    V[1] = eV_to_au(model.tmp_energy[1])
+end
 
-# function derivative!(model::EANN_H₂Ag, D::AbstractMatrix, R::AbstractMatrix)
-#     @views model.tmp_coordinates .= au_to_ang.(R[:,model.h2indices])
-#     cd(splitdir(model.potential_path)[1]) do
-#         ccall(model.force_function, Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
-#               2, model.tmp_coordinates, D)
-#     end
-#     D .= eV_per_ang_to_au.(D)
-# end
+function derivative!(model::EANN_H₂Ag, D::AbstractMatrix, R::AbstractMatrix)
+    @views model.tmp_coordinates .= au_to_ang.(R[:,model.h2indices])
+    ccall((:dpeshon_, h2ag111_pes), Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
+            2, model.tmp_coordinates, D)
+    D .= eV_per_ang_to_au.(D)
+end
 
-# function friction!(model::EANN_H₂Ag, F::AbstractMatrix, R::AbstractMatrix)
-#     @views model.tmp_friction_coordinates .= au_to_ang.(R[:,model.h2indices])
-#     cd(splitdir(model.friction_path)[1]) do
-#         ccall(model.friction_function, Cvoid, (Ref{Float64}, Ptr{Float64}),
-#               model.tmp_coordinates, model.tmp_friction)
-#     end
-#     F[1:6,1:6] .= ps_inv_to_au.(model.tmp_friction)
-#     F .*= austrip(elements[:H].atomic_mass)
-# end
+function friction!(model::EANN_H₂Ag, F::AbstractMatrix, R::AbstractMatrix)
+    @views model.tmp_friction_coordinates .= au_to_ang.(R[:,model.h2indices])
+    cd(h2ag111_friction_path) do
+        ccall((:tensor_, h2ag111_friction), Cvoid, (Ref{Float64}, Ptr{Float64}),
+              model.tmp_coordinates, model.tmp_friction)
+    end
+    F[1:6,1:6] .= ps_inv_to_au.(model.tmp_friction)
+    F .*= austrip(elements[:H].atomic_mass)
+end
