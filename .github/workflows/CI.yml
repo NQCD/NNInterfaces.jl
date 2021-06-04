@@ -20,8 +20,5 @@ jobs:
       - name: Add NonadiabaticRegistry
         run: julia -e 'using Pkg; Pkg.Registry.add(RegistrySpec(url="git@github.com:maurergroup/NonadiabaticRegistry.git"))'
 
-      - name: Set Pkg protocol to "ssh" for github
-        run: git config --global url.git@github.com:.insteadOf https://github.com/
-
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
