@@ -16,7 +16,9 @@ struct H2AgModel{T} <: AdiabaticFrictionModel
     tmp_energy::Matrix{T}
     function H2AgModel(h2indices=[1, 2])
 
-        ccall((:pes_init_, h2ag111_pes), Cvoid, ())
+        cd("H2AgModel_jll.artifact_dir/lib") do
+            ccall((:pes_init_, h2ag111_pes), Cvoid, ())
+        end
 
         @assert h2indices == [1, 2]
         new{Float64}(h2indices, zeros(3, 2), zeros(3, 2), zeros(6, 6), zeros(1, 1))
