@@ -25,12 +25,11 @@ struct H2AgModel{T} <: AdiabaticFrictionModel
     end
 end
 
-function NonadiabaticModels.potential!(model::H2AgModel, V::AbstractVector, R::AbstractMatrix)
+function NonadiabaticModels.potential(model::H2AgModel, R::AbstractMatrix)
     set_coordinates!(model, R)
     ccall(((:pot0_, h2ag111_pes)), Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
             2, model.tmp_coordinates, model.tmp_energy)
-    V[1] = austrip(model.tmp_energy[1]*u"eV")
-    return V
+    return austrip(model.tmp_energy[1]*u"eV")
 end
 
 function NonadiabaticModels.derivative!(model::H2AgModel, D::AbstractMatrix, R::AbstractMatrix)

@@ -3,7 +3,7 @@ using Test
 using FiniteDiff
 
 function finite_difference_gradient(model, R)
-    f(x) = potential(model, x)[1]
+    f(x) = potential(model, x)
     FiniteDiff.finite_difference_gradient(f, R)
 end
 
