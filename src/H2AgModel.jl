@@ -2,8 +2,8 @@
 using Unitful: @u_str, ustrip
 using UnitfulAtomic: austrip, auconvert
 using PeriodicTable: PeriodicTable
-using H2AgModel_jll: H2AgModel_jll
 using NonadiabaticModels: FrictionModels
+using H2AgModel_jll
 
 export H2AgModel
 
@@ -20,7 +20,7 @@ struct H2AgModel{T} <: FrictionModels.AdiabaticFrictionModel
     function H2AgModel(h2indices=[1, 2])
 
         cd(splitdir(H2AgModel_jll.h2ag111_pes_path)[1]) do
-            ccall((:pes_init_, H2AgModel_jll.h2ag111_pes), Cvoid, ())
+            ccall((:pes_init_, h2ag111_pes), Cvoid, ())
         end
 
         @assert h2indices == [1, 2]
@@ -30,7 +30,7 @@ end
 
 function NonadiabaticModels.potential(model::H2AgModel, R::AbstractMatrix)
     set_coordinates!(model, R)
-    ccall(((:pot0_, H2AgModel_jll.h2ag111_pes)), Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
+    ccall(((:pot0_, h2ag111_pes)), Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
             2, model.tmp_coordinates, model.tmp_energy)
     return austrip(model.tmp_energy[1]*u"eV")
 end
@@ -46,7 +46,7 @@ end
 function FrictionModels.friction!(model::H2AgModel, F::AbstractMatrix, R::AbstractMatrix)
     set_coordinates!(model, R)
     cd(splitdir(H2AgModel_jll.h2ag111_friction_path)[1]) do
-        ccall((:tensor_, H2AgModel_jll.h2ag111_friction), Cvoid, (Ref{Float64}, Ptr{Float64}),
+        ccall((:tensor_, h2ag111_friction), Cvoid, (Ref{Float64}, Ptr{Float64}),
               model.tmp_coordinates, model.tmp_friction)
     end
     @. F[1:6,1:6] = austrip(model.tmp_friction*u"ps^-1")
