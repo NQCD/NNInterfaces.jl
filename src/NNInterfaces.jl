@@ -1,7 +1,7 @@
 module NNInterfaces
 
-using Reexport
-using Unitful, UnitfulAtomic
+using Reexport: @reexport
+
 @reexport using NonadiabaticModels
 
 include("H2AgModel.jl")
