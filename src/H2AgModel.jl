@@ -28,6 +28,8 @@ struct H2AgModel{T} <: FrictionModels.AdiabaticFrictionModel
     end
 end
 
+NonadiabaticModels.ndofs(::H2AgModel) = 3
+
 function NonadiabaticModels.potential(model::H2AgModel, R::AbstractMatrix)
     set_coordinates!(model, R)
     ccall(((:pot0_, h2ag111_pes)), Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
