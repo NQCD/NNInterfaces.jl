@@ -2,7 +2,7 @@
 using Unitful: @u_str, ustrip
 using UnitfulAtomic: austrip, auconvert
 using PeriodicTable: PeriodicTable
-using NonadiabaticModels: FrictionModels
+using NQCModels: FrictionModels
 using H2AgModel_jll
 
 export H2AgModel
@@ -28,16 +28,16 @@ struct H2AgModel{T} <: FrictionModels.AdiabaticFrictionModel
     end
 end
 
-NonadiabaticModels.ndofs(::H2AgModel) = 3
+NQCModels.ndofs(::H2AgModel) = 3
 
-function NonadiabaticModels.potential(model::H2AgModel, R::AbstractMatrix)
+function NQCModels.potential(model::H2AgModel, R::AbstractMatrix)
     set_coordinates!(model, R)
     ccall(((:pot0_, h2ag111_pes)), Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
             2, model.tmp_coordinates, model.tmp_energy)
     return austrip(model.tmp_energy[1]*u"eV")
 end
 
-function NonadiabaticModels.derivative!(model::H2AgModel, D::AbstractMatrix, R::AbstractMatrix)
+function NQCModels.derivative!(model::H2AgModel, D::AbstractMatrix, R::AbstractMatrix)
     set_coordinates!(model, R)
     ccall((:dpeshon_, H2AgModel_jll.h2ag111_pes), Cvoid, (Ref{Int64}, Ref{Float64}, Ptr{Float64}),
             2, model.tmp_coordinates, D)
