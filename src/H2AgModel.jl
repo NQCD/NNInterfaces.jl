@@ -11,7 +11,7 @@ export H2AgModel
 J. Phys. Chem. Lett. 2019, 10, 4962−4967
 J. Phys. Chem. C 2020, 124, 186−195
 """
-struct H2AgModel{T} <: FrictionModels.AdiabaticFrictionModel
+struct H2AgModel{T} <: FrictionModels.ClassicalFrictionModel
     h2indices::Vector{Int}
     tmp_coordinates::Matrix{T}
     tmp_friction_coordinates::Matrix{T}
