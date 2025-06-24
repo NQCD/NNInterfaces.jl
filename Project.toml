@@ -1,7 +1,7 @@
 name = "NNInterfaces"
 uuid = "07253886-9aba-4a5d-b3d5-29b8b100a664"
 authors = ["James Gardner <james.gardner1421@gmail.com> and contributors"]
-version = "0.2.5"
+version = "1.0.0"
 
 [deps]
 H2AgModel_jll = "a822e7dc-5958-54de-9eb2-fa386864eb49"
@@ -13,7 +13,7 @@ UnitfulAtomic = "a7773ee8-282e-5fa2-be4e-bd808c38a91a"
 
 [compat]
 H2AgModel_jll = "0.1"
-NQCModels = "0.8, 0.9"
+NQCModels = "0.10"
 PeriodicTable = "1"
 Reexport = "1"
 Unitful = "1"
